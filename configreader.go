@@ -15,10 +15,10 @@ func topLevelLine(line string) bool {
 		return !unicode.IsSpace(r) && !commentLine(line)
 	}) == 0
 }
-func hasMapKey(line string, keys ...string) (key string, found bool) {
-	for _, key = range keys {
-		if strings.HasPrefix(line, key) {
-			line = strings.TrimPrefix(line, key)
+func configLine(line string, configs ...string) (config string, found bool) {
+	for _, config = range configs {
+		if strings.HasPrefix(line, config) {
+			line = strings.TrimPrefix(line, config)
 			if strings.HasPrefix(strings.TrimSpace(line), ":") {
 				found = true
 				break
@@ -29,25 +29,25 @@ func hasMapKey(line string, keys ...string) (key string, found bool) {
 }
 
 // extractConfigs extracts configs from the body. Returns the body, config, error.
-func extractConfigs(body []byte, keys ...string) ([]byte, []byte, error) {
-	keySet := map[string]struct{}{}
-	for _, key := range keys {
-		keySet[key] = struct{}{}
+func extractConfigs(body []byte, configs ...string) ([]byte, []byte, error) {
+	set := map[string]struct{}{}
+	for _, config := range configs {
+		set[config] = struct{}{}
 	}
 
-	var cout bytes.Buffer
-	var bout bytes.Buffer
+	var configBuffer bytes.Buffer
+	var bodyBuffer bytes.Buffer
 
 	reader := bufio.NewReader(bytes.NewReader(body))
-	for len(keySet) > 0 {
+	for len(set) > 0 {
 		err := bufReadUntil(reader, func(line string) bool {
-			key, ok := hasMapKey(line, keys...)
+			config, ok := configLine(line, configs...)
 			if !ok {
-				bout.WriteString(line)
+				bodyBuffer.WriteString(line)
 				return false
 			}
-			delete(keySet, key)
-			cout.WriteString(line)
+			delete(set, config)
+			configBuffer.WriteString(line)
 			return true
 		})
 		// discard EOF as error
@@ -57,10 +57,10 @@ func extractConfigs(body []byte, keys ...string) ([]byte, []byte, error) {
 
 		err = bufReadUntil(reader, func(line string) bool {
 			if !topLevelLine(line) {
-				cout.WriteString(line)
+				configBuffer.WriteString(line)
 				return false
 			}
-			bout.WriteString(line)
+			bodyBuffer.WriteString(line)
 			return true
 		})
 		if err != nil {
@@ -71,9 +71,9 @@ func extractConfigs(body []byte, keys ...string) ([]byte, []byte, error) {
 		}
 	}
 
-	io.Copy(&bout, reader)
+	io.Copy(&bodyBuffer, reader)
 
-	return bout.Bytes(), cout.Bytes(), nil
+	return bodyBuffer.Bytes(), configBuffer.Bytes(), nil
 }
 
 func bufReadUntil(buf *bufio.Reader, f func(string) bool) error {

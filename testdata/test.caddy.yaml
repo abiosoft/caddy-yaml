@@ -1,9 +1,19 @@
 template_values:
   port: :8080
+  hostname: blog.local
+  dir: "#{$HOME}/public"
 
 apps:
   http:
     servers:
-      srv:
+      site:
         listen:
           - "#{.port}"
+        routes:
+          - match:
+              - host: ["#{.hostname}"]
+            handle:
+              - handler: file_server
+                root: "#{.dir}"
+              - handler: static_response
+                body: "root directory is #{.dir}"
