@@ -1,0 +1,9 @@
+template_values:
+  port: :8080
+
+apps:
+  http:
+    servers:
+      srv:
+        listen:
+          - "#{.port}"

@@ -1,0 +1,33 @@
+# imports:
+#   - ./othertemplate.yaml
+
+template_values:
+  port: ":8080"
+  hello: "Hello from YAML template"
+  hostnames: [localhost, 127.0.0.1]
+
+apps:
+  http:
+    servers:
+      srv:
+        listen:
+          - "#{.port}"
+        logs:
+          logger_names:
+            #{range .hostnames}
+            "#{.}": site
+            #{end}
+        routes:
+          - match:
+              - host:
+                  #{range .hostnames}
+                  - "#{.}"
+                  #{end}
+            handle:
+              - handler: static_response
+                body: "#{.hello}"
+
+logging:
+  logs:
+    site:
+      writer: { output: stderr }
