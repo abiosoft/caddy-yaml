@@ -25,16 +25,14 @@ func adapt(body []byte, options map[string]interface{}) ([]byte, []caddyconfig.W
 		return nil, nil, err
 	}
 
-	// if no config, convert to yaml as is.
+	// if block exists, validate template values
 	values, ok := config[templateValuesKey]
-	if !ok {
-		result, err := yamlToJSON(body)
-		return result, nil, err
-	}
-
-	// validate template values
-	if _, ok := values.(map[string]interface{}); !ok {
-		return nil, nil, fmt.Errorf("%s must be a map", templateValuesKey)
+	if ok {
+		if _, ok := values.(map[string]interface{}); !ok {
+			return nil, nil, fmt.Errorf("%s must be a map", templateValuesKey)
+		}
+	} else {
+		values = map[string]interface{}{}
 	}
 
 	// apply template
