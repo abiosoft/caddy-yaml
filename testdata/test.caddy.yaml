@@ -1,19 +1,33 @@
+# Disclaimer:
+# for template demonstration purposes only,
+# this is not the best way to structure a config.
+
 template_values:
-  port: :8080
-  hostname: blog.local
-  dir: "#{$HOME}/public"
+  domains:
+    #{if eq $ENVIRONMENT "production"}
+    - blog.domain
+    - website.domain
+    #{else}
+    - blog.localhost
+    - website.localhost
+    #{end}
 
 apps:
   http:
     servers:
-      site:
-        listen:
-          - "#{.port}"
+      default:
+        listen: [":443"]
         routes:
+          #{range .domains}
           - match:
-              - host: ["#{.hostname}"]
+              - host: ["#{.}"]
             handle:
-              - handler: file_server
-                root: "#{.dir}"
               - handler: static_response
-                body: "root directory is #{.dir}"
+                body: "Hello from #{.}"
+          #{end}
+
+#{if ne $ENVIRONMENT "production"}
+logging:
+  logs:
+    default: { level: DEBUG }
+#{end}

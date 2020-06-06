@@ -1,0 +1,52 @@
+{
+    "apps": {
+        "http": {
+            "servers": {
+                "default": {
+                    "listen": [
+                        ":443"
+                    ],
+                    "routes": [
+                        {
+                            "handle": [
+                                {
+                                    "handler": "static_response",
+                                    "body": "Hello from blog.localhost"
+                                }
+                            ],
+                            "match": [
+                                {
+                                    "host": [
+                                        "blog.localhost"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "handle": [
+                                {
+                                    "handler": "static_response",
+                                    "body": "Hello from website.localhost"
+                                }
+                            ],
+                            "match": [
+                                {
+                                    "host": [
+                                        "website.localhost"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "logging": {
+        "logs": {
+            "default": {
+                "level": "DEBUG"
+            }
+        }
+    }
+}

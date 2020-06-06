@@ -32,7 +32,7 @@ func adapt(body []byte, options map[string]interface{}) ([]byte, []caddyconfig.W
 		return result, nil, err
 	}
 
-	// validate values
+	// validate template values
 	if _, ok := values.(map[string]interface{}); !ok {
 		return nil, nil, fmt.Errorf("%s must be a map", templateValuesKey)
 	}

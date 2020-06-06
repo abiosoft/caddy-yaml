@@ -9,7 +9,6 @@ import (
 )
 
 func commentLine(line string) bool { return strings.HasPrefix(strings.TrimSpace(line), "#") }
-func emptyLine(line string) bool   { return strings.TrimSpace(line) == "#" }
 func topLevelLine(line string) bool {
 	return strings.IndexFunc(line, func(r rune) bool {
 		return !unicode.IsSpace(r) && !commentLine(line)

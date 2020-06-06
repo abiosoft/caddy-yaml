@@ -1,2 +1,4 @@
 .vscode/
+examples/
 caddy
+deps.go

@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/Masterminds/sprig"
 )
 
 const (
@@ -18,6 +20,7 @@ const (
 func applyTemplate(body []byte, values map[string]interface{}) ([]byte, error) {
 	tplBody := envVarsTemplate() + string(body)
 	tpl, err := template.New("yaml").
+		Funcs(sprig.TxtFuncMap()).
 		Delims(openingDelim, closingDelim).
 		Parse(tplBody)
 	if err != nil {

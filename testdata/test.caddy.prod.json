@@ -1,0 +1,45 @@
+{
+    "apps": {
+        "http": {
+            "servers": {
+                "default": {
+                    "listen": [
+                        ":443"
+                    ],
+                    "routes": [
+                        {
+                            "handle": [
+                                {
+                                    "handler": "static_response",
+                                    "body": "Hello from blog.domain"
+                                }
+                            ],
+                            "match": [
+                                {
+                                    "host": [
+                                        "blog.domain"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "handle": [
+                                {
+                                    "handler": "static_response",
+                                    "body": "Hello from website.domain"
+                                }
+                            ],
+                            "match": [
+                                {
+                                    "host": [
+                                        "website.domain"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
