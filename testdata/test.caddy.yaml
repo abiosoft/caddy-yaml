@@ -1,6 +1,6 @@
 # Disclaimer:
-# for template demonstration purposes only,
-# this is not the best way to structure a config.
+# This is simply a demonstration of what's possible with templates,
+# anchors and aliases. Not a recommendation of how to structure a config.
 
 template_values:
   domains:
@@ -12,17 +12,23 @@ template_values:
     - website.localhost
     #{end}
 
+_static_handler: &static_handler
+  handler: static_response
+  status_code: "200"
+
 apps:
   http:
     servers:
       default:
+        logs:
+          default_logger_name: default
         listen: [":443"]
         routes:
           #{range .domains}
           - match:
               - host: ["#{.}"]
             handle:
-              - handler: static_response
+              - <<: *static_handler
                 body: "Hello from #{.}"
           #{end}
 

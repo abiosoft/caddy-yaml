@@ -28,7 +28,7 @@ func adapt(body []byte, options map[string]interface{}) ([]byte, []caddyconfig.W
 	// if no config, convert to yaml as is.
 	values, ok := config[templateValuesKey]
 	if !ok {
-		result, err := yaml.YAMLToJSON(body)
+		result, err := yamlToJSON(body)
 		return result, nil, err
 	}
 
@@ -44,6 +44,6 @@ func adapt(body []byte, options map[string]interface{}) ([]byte, []caddyconfig.W
 	}
 
 	// convert to YAML
-	result, err := yaml.YAMLToJSON(tmp)
+	result, err := yamlToJSON(tmp)
 	return result, nil, err
 }

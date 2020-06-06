@@ -3,6 +3,9 @@
         "http": {
             "servers": {
                 "default": {
+                    "logs": {
+                        "default_logger_name": "default"
+                    },
                     "listen": [
                         ":443"
                     ],
@@ -11,7 +14,8 @@
                             "handle": [
                                 {
                                     "handler": "static_response",
-                                    "body": "Hello from blog.localhost"
+                                    "body": "Hello from blog.localhost",
+                                    "status_code": "200"
                                 }
                             ],
                             "match": [
@@ -26,7 +30,8 @@
                             "handle": [
                                 {
                                     "handler": "static_response",
-                                    "body": "Hello from website.localhost"
+                                    "body": "Hello from website.localhost",
+                                    "status_code": "200"
                                 }
                             ],
                             "match": [
