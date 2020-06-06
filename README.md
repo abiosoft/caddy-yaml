@@ -39,6 +39,7 @@ This project does a few extra things.
   This makes it possible to leverage features like YAML anchors. Otherwise, Caddy would error for unknown fields.
 
   ```yaml
+  ...
   _domain: &domain mysite.example.com
   ...
   host: [ *domain ]
@@ -65,7 +66,7 @@ If the above features are not needed, the behaviour is identical to [iamd3vil/ca
 
 ## Templating
 
-Anything supported by [Go templates](https://pkg.go.dev/text/template) can be used, as well as any [sprig](https://masterminds.github.io/sprig) functions.
+Anything supported by [Go templates](https://pkg.go.dev/text/template) can be used, as well as any [Sprig](https://masterminds.github.io/sprig) function.
 
 ### Delimeters
 
@@ -73,22 +74,22 @@ Delimeters are `#{` and `}`. e.g. `#{.text}`. This ensures the YAML config file 
 
 ### Values
 
-Values defined in top level `template_values` can be reused anywhere else in
+Top level configs prefixed with `_` can be reused anywhere else in
 the YAML config.
 
 ```yaml
-template_values:
-  hello: Hello from YAML template
-  nest:
-    value: nesting
+_hello: Hello from YAML template
+_nest:
+  value: nesting
 ```
+
 Referencing in a route handler.
 
 ```yaml
 ...
 handle:
   - handler: static_response
-    body: "#{ .hello } with #{ .nest.value }"
+    body: "#{ ._hello } with #{ ._nest.value }"
 ```
 
 ### Environment Variables
@@ -100,7 +101,7 @@ listen:
     - "#{ $PORT }"
 ...
 handler: file_server
-root: "#{ $PROJECT }/public"
+root: "#{ $PROJECT_DIRECTORY }/public"
 ```
 
 Caddy supports runtime environment variables via [`{env.*}` placeholders](https://caddyserver.com/docs/caddyfile/concepts#environment-variables).
