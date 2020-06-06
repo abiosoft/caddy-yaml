@@ -20,7 +20,7 @@ Specify with the `--adapter` flag for `caddy run`.
 caddy run --config /path/to/yaml/config.yaml --adapter yaml
 ```
 
-## Comparison with [iamd3vil/caddy_yaml_adapter](https://github.com/iamd3vil/caddy_yaml_adapter)
+## Comparison with existing YAML adapter
 
 This project does a few extra things.
 
@@ -51,17 +51,17 @@ This project does a few extra things.
 
 * Config-time environment variables
 
-  Without the Caddyfile, Caddy's native configuration limits to [runtime environment variables](https://caddyserver.com/docs/caddyfile/concepts#environment-variables).
+  Without the Caddyfile, Caddy's native configuration limits to runtime environment variables.
   There are use cases for knowing the environment variables at configuration time. e.g. troubleshooting purposes.
 
   ```yaml
   listen: "#{ $PORT }"
   ```
 
-If the above features are not utilised, the behaviour is identical to [iamd3vil/caddy_yaml_adapter](https://github.com/iamd3vil/caddy_yaml_adapter).
+If the above features are not needed or utilised, the behaviour is identical to [iamd3vil/caddy_yaml_adapter](https://github.com/iamd3vil/caddy_yaml_adapter).
 
 
-**Note** that you can not have both adapters built with Caddy, they are incompatible. They both register as `yaml` config adapter and at most one config adapter is allowed per config format.
+_**Note** that you can not have both adapters built with Caddy, they are incompatible. They both register as `yaml` config adapter and at most one config adapter is allowed per config format_.
 
 
 ## Templating
@@ -70,7 +70,7 @@ Anything supported by [Go templates](https://pkg.go.dev/text/template) can be us
 
 ### Delimeters
 
-Delimeters are `#{` and `}`. e.g. `#{.text}`. This ensures the YAML config file with templates included remains a valid YAML file and can still be validated by the schema.
+Delimeters are `#{` and `}`. e.g. `#{ ._name }`. The choice of delimeters ensures the YAML config file remains a valid YAML file that can be validated by the schema.
 
 ### Values
 
@@ -92,7 +92,7 @@ handle:
     body: "#{ ._hello } with #{ ._nest.value }"
 ```
 
-_If string interpolation is not needed, consider using YAML anchors and aliases instead_.
+_If string interpolation is not needed, YAML anchors and aliases can also be used to achieve this_.
 
 ### Environment Variables
 
@@ -100,10 +100,10 @@ Environment variables can be referenced in a template by prefixing with `$` sign
 
 ```yaml
 listen:
-    - "#{ $PORT }"
+  - "#{ $PORT }"
 ...
 handler: file_server
-root: "#{ $PROJECT_DIRECTORY }/public"
+root: "#{ $APP_ROOT_DIR }/public"
 ```
 
 Caddy supports runtime environment variables via [`{env.*}` placeholders](https://caddyserver.com/docs/caddyfile/concepts#environment-variables).

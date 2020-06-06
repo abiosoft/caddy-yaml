@@ -2,6 +2,7 @@
 # This is a demonstration of what's possible with templates, anchors and aliases.
 # Not necessarily a recommendation of how to structure a config.
 
+# To have an idea of what this adapts to, check the test.caddy.[prod.]json files.
 _domains: &domains 
 #{if eq $ENVIRONMENT "production"}
   - blog.domain
