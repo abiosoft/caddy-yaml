@@ -7,6 +7,7 @@ on:
     branches: [master]
 env:
   GO111MODULE: on
+  DEBUG: 1
 
 jobs:
   build:
@@ -18,6 +19,9 @@ jobs:
         with:
           go-version: ^1.14
         id: go
+
+      - name: Dump Env Vars
+        run: sh -c 'env'
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
