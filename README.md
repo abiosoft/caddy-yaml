@@ -34,9 +34,9 @@ This project does a few extra things.
   #{end}
   ```
 
-* Top level configs prefixed with `_` are discarded.
+* Top level keys prefixed with `_` are discarded.
 
-  This makes it possible to leverage features like YAML anchors. Otherwise, Caddy would error for unknown fields.
+  This makes it easier to leverage features like YAML anchors and aliases, while avoiding Caddy errors due to unknown fields.
 
   ```yaml
   ...
@@ -58,7 +58,7 @@ This project does a few extra things.
   listen: "#{ $PORT }"
   ```
 
-If the above features are not needed, the behaviour is identical to [iamd3vil/caddy_yaml_adapter](https://github.com/iamd3vil/caddy_yaml_adapter).
+If the above features are not utilised, the behaviour is identical to [iamd3vil/caddy_yaml_adapter](https://github.com/iamd3vil/caddy_yaml_adapter).
 
 
 **Note** that you can not have both adapters built with Caddy, they are incompatible. They both register as `yaml` config adapter and at most one config adapter is allowed per config format.
@@ -74,7 +74,7 @@ Delimeters are `#{` and `}`. e.g. `#{.text}`. This ensures the YAML config file 
 
 ### Values
 
-Top level configs prefixed with `_` can be reused anywhere else in
+Top level keys prefixed with `_` can be reused anywhere else in
 the YAML config.
 
 ```yaml
@@ -83,7 +83,7 @@ _nest:
   value: nesting
 ```
 
-Referencing in a route handler.
+Referencing them.
 
 ```yaml
 ...
@@ -91,6 +91,8 @@ handle:
   - handler: static_response
     body: "#{ ._hello } with #{ ._nest.value }"
 ```
+
+_If string interpolation is not needed, consider using YAML anchors and aliases instead_.
 
 ### Environment Variables
 
