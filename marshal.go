@@ -51,7 +51,10 @@ func varsFromBody(b []byte) (map[string]interface{}, error) {
 	for xkey, val := range tmp {
 		key := xkey[2:] // discard x- prefix
 		if strings.Index(key, "-") > 0 {
-			return nil, fmt.Errorf("template: apart from 'x-' prefix, '-' cannot be used in extension field name for %s", xkey)
+			return nil, fmt.Errorf("template: apart from 'x-' prefix, '-' is not permitted in extension field name for %s", xkey)
+		}
+		if strings.Index(key, ".") > 0 {
+			return nil, fmt.Errorf("template: '.' is not permitted in extension field name for %s", xkey)
 		}
 		vars[key] = val
 	}
