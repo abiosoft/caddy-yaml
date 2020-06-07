@@ -34,7 +34,7 @@ This project does a few extra things.
   #{end}
   ```
 
-* Extension Fields. A convension used in [Docker Compose](https://docs.docker.com/compose/compose-file/#extension-fields). 
+* Extension Fields. A convension used in [Docker Compose](https://docs.docker.com/compose/compose-file/#extension-fields).
 
   Top level keys prefixed with `x-` are discarded. This makes it easier to leverage YAML anchors and aliases, while avoiding Caddy errors due to unknown fields.
 
@@ -44,7 +44,7 @@ This project does a few extra things.
   # reuse alias
   host: [ *domain ]
   # reuse alias
-  logger_names: 
+  logger_names:
     - *domain: customlog
   ```
 
@@ -69,7 +69,7 @@ Anything supported by [Go templates](https://pkg.go.dev/text/template) can be us
 
 ### Delimeters
 
-Delimeters are `#{` and `}`. e.g. `#{ .x-title }`. The choice of delimeters ensures the YAML config file remains a valid YAML file that can be validated by the schema.
+Delimeters are `#{` and `}`. e.g. `#{ .title }`. The choice of delimeters ensures the YAML config file remains a valid YAML file that can be validated by the schema.
 
 ### Values
 
@@ -107,7 +107,7 @@ root: "#{ $APP_ROOT_DIR }/public"
 
 Caddy supports runtime environment variables via [`{env.*}` placeholders](https://caddyserver.com/docs/caddyfile/concepts#environment-variables).
 
-### Example Config 
+### Example Config
 
 Check the [test YAML configuration file](https://github.com/abiosoft/caddy-yaml/blob/master/testdata/test.caddy.yaml).
 
