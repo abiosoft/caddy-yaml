@@ -3,7 +3,7 @@
 # Not necessarily a recommendation of how to structure a config.
 
 # To have an idea of what this adapts to, check the test.caddy.[prod.]json files.
-_domains: &domains 
+x-domains: &domains 
 #{if eq $ENVIRONMENT "production"}
   - blog.domain
   - website.domain
@@ -12,7 +12,7 @@ _domains: &domains
   - website.localhost
 #{end}
 
-_static_handler: &static_handler
+x-static_handler: &static_handler
   handler: static_response
   status_code: "200"
 
@@ -24,7 +24,7 @@ apps:
           default_logger_name: default
         listen: [":443"]
         routes:
-          #{range ._domains}
+          #{range .domains}
           - match:
               - host: ["#{.}"]
             handle:
