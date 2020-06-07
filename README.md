@@ -34,19 +34,18 @@ This project does a few extra things.
   #{end}
   ```
 
-* Top level keys prefixed with `_` are discarded.
+* Extension Fields. A convension used in [Docker Compose](https://docs.docker.com/compose/compose-file/#extension-fields). 
 
-  This makes it easier to leverage features like YAML anchors and aliases, while avoiding Caddy errors due to unknown fields.
+  Top level keys prefixed with `x-` are discarded. This makes it easier to leverage YAML anchors and aliases, while avoiding Caddy errors due to unknown fields.
 
   ```yaml
-  ...
-  _domain: &domain mysite.example.com
-  ...
+  # anchor declaration
+  x-domain: &domain mysite.example.com
+  # reuse alias
   host: [ *domain ]
-  ...
+  # reuse alias
   logger_names: 
     - *domain: customlog
-  ...
   ```
 
 * Config-time environment variables
@@ -61,7 +60,7 @@ This project does a few extra things.
 If the above features are not needed or utilised, the behaviour is identical to [iamd3vil/caddy_yaml_adapter](https://github.com/iamd3vil/caddy_yaml_adapter).
 
 
-_**Note** that you can not have both adapters built with Caddy, they are incompatible. They both register as `yaml` config adapter and at most one config adapter is allowed per config format_.
+_**Note** that both adapters cannot be built with Caddy, they are incompatible. They both register as `yaml` config adapter and at most one config adapter is allowed per config format_.
 
 
 ## Templating
@@ -70,33 +69,33 @@ Anything supported by [Go templates](https://pkg.go.dev/text/template) can be us
 
 ### Delimeters
 
-Delimeters are `#{` and `}`. e.g. `#{ ._name }`. The choice of delimeters ensures the YAML config file remains a valid YAML file that can be validated by the schema.
+Delimeters are `#{` and `}`. e.g. `#{ .x-title }`. The choice of delimeters ensures the YAML config file remains a valid YAML file that can be validated by the schema.
 
 ### Values
 
-Top level keys prefixed with `_` can be reused anywhere else in
+Extension fields can be reused anywhere else in
 the YAML config.
 
 ```yaml
-_hello: Hello from YAML template
-_nest:
+x-hello: Hello from YAML template
+x-nest:
   value: nesting
 ```
 
-Referencing them.
+Referencing them without `x-` prefix.
 
 ```yaml
 ...
 handle:
   - handler: static_response
-    body: "#{ ._hello } with #{ ._nest.value }"
+    body: "#{ .hello } with #{ .nest.value }"
 ```
 
 _If string interpolation is not needed, YAML anchors and aliases can also be used to achieve this_.
 
 ### Environment Variables
 
-Environment variables can be referenced in a template by prefixing with `$` sign.
+Environment variables can be used in a template by prefixing with `$`.
 
 ```yaml
 listen:
