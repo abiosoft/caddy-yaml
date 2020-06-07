@@ -8,8 +8,6 @@ import (
 	"testing"
 )
 
-type M map[string]interface{}
-
 func TestApply(t *testing.T) {
 	tests := []struct {
 		filename    string

@@ -14,8 +14,6 @@ import (
 const (
 	openingDelim = "#{"
 	closingDelim = "}"
-
-	templateValuesKey = "template_values"
 )
 
 func applyTemplate(body []byte, values map[string]interface{}) ([]byte, error) {

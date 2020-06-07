@@ -40,12 +40,22 @@ This project does a few extra things.
 
   ```yaml
   # anchor declaration
-  x-domain: &domain mysite.example.com
+  x-file_server: &file_server
+    handler: file_server
+    hide: [".git"]
+    index_names: [index.html]
+
   # reuse alias
-  host: [ *domain ]
+  ...
+  handle:
+    - <<: *file_server
+      root: /var/www/blog/public
+
   # reuse alias
-  logger_names:
-    - *domain: customlog
+  ...
+  handle:
+    - <<: *file_server
+      root: /var/www/api/docs
   ```
 
 * Config-time environment variables

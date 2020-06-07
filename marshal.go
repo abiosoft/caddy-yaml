@@ -47,15 +47,19 @@ func varsFromBody(b []byte) (map[string]interface{}, error) {
 
 	vars = make(map[string]interface{})
 
-	// go template prohibits hyphen `-` in field names.
 	for xkey, val := range tmp {
 		key := xkey[2:] // discard x- prefix
+
+		// go template prohibits hyphen `-` in field names.
 		if strings.Index(key, "-") > 0 {
 			return nil, fmt.Errorf("template: apart from 'x-' prefix, '-' is not permitted in extension field name for %s", xkey)
 		}
+
+		// go template uses dot `.` for nesting.
 		if strings.Index(key, ".") > 0 {
 			return nil, fmt.Errorf("template: '.' is not permitted in extension field name for %s", xkey)
 		}
+
 		vars[key] = val
 	}
 
