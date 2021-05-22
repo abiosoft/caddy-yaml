@@ -34,7 +34,7 @@ This project does a few extra things.
   #{end}
   ```
 
-* Extension Fields. A convension used in [Docker Compose](https://docs.docker.com/compose/compose-file/#extension-fields).
+- Extension Fields. A convension used in [Docker Compose](https://docs.docker.com/compose/compose-file/compose-file-v3/#extension-fields).
 
   Top level keys prefixed with `x-` are discarded. This makes it easier to leverage YAML anchors and aliases, while avoiding Caddy errors due to unknown fields.
 
