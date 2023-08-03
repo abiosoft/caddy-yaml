@@ -46,8 +46,7 @@ func envVarsTemplate() string {
 		return tplWrap(fmt.Sprintf(`$%s := "%s"`, key, val))
 	}
 	for _, env := range os.Environ() {
-		tmp := strings.SplitN(env, "=", 2)
-		key, val := tmp[0], tmp[1]
+		key, val, _ := strings.Cut(env, "=")
 		fmt.Fprintln(&builder, line(key, val))
 	}
 	return builder.String()
