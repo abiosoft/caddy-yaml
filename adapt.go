@@ -27,7 +27,7 @@ func adapt(body []byte, options map[string]interface{}) ([]byte, []caddyconfig.W
 	}
 
 	// apply template
-	tmp, err := applyTemplate(body, vars, env)
+	tmp, err := applyTemplate(body, vars, env, wc)
 	if err != nil {
 		return nil, wc.warnings, err
 	}

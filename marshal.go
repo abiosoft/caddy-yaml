@@ -36,7 +36,7 @@ func varsFromBody(b []byte, env []string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	varsBytes, err = applyTemplate(varsBytes, nil, env)
+	varsBytes, err = applyTemplate(varsBytes, nil, env, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -3,6 +3,7 @@ package caddyyaml
 import (
 	"bytes"
 	"fmt"
+	"go/token"
 	"strings"
 	"text/template"
 
@@ -14,8 +15,8 @@ const (
 	closingDelim = "}"
 )
 
-func applyTemplate(body []byte, values map[string]interface{}, env []string) ([]byte, error) {
-	tplBody := envVarsTemplate(env) + string(body)
+func applyTemplate(body []byte, values map[string]interface{}, env []string, wc *warningsCollector) ([]byte, error) {
+	tplBody := envVarsTemplate(env, wc) + string(body)
 
 	tpl, err := template.New("yaml").
 		Funcs(sprig.TxtFuncMap()).
@@ -32,13 +33,19 @@ func applyTemplate(body []byte, values map[string]interface{}, env []string) ([]
 	return out.Bytes(), nil
 }
 
-func envVarsTemplate(env []string) string {
+func envVarsTemplate(env []string, wc *warningsCollector) string {
 	var builder strings.Builder
 	line := func(key, val string) string {
 		return tplWrap(fmt.Sprintf(`$%s := %q`, key, val))
 	}
 	for _, env := range env {
 		key, val, _ := strings.Cut(env, "=")
+		if !token.IsIdentifier(key) {
+			if wc != nil {
+				wc.Add(-1, "", fmt.Sprintf("environment variable %q cannot be used in template", key))
+			}
+			continue
+		}
 		fmt.Fprintln(&builder, line(key, val))
 	}
 	return builder.String()
