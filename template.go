@@ -3,7 +3,6 @@ package caddyyaml
 import (
 	"bytes"
 	"fmt"
-	"strconv"
 	"strings"
 	"text/template"
 
@@ -36,13 +35,7 @@ func applyTemplate(body []byte, values map[string]interface{}, env []string) ([]
 func envVarsTemplate(env []string) string {
 	var builder strings.Builder
 	line := func(key, val string) string {
-		// avoid quoted string
-		if len(val) > 0 && val[0] == '"' {
-			if v, err := strconv.Unquote(val); err == nil {
-				val = v
-			}
-		}
-		return tplWrap(fmt.Sprintf(`$%s := "%s"`, key, val))
+		return tplWrap(fmt.Sprintf(`$%s := %q`, key, val))
 	}
 	for _, env := range env {
 		key, val, _ := strings.Cut(env, "=")
