@@ -25,7 +25,9 @@ func TestApply(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			adaptedBytes, _, err := Adapter{}.Adapt(b, nil)
+			adaptedBytes, _, err := Adapter{}.Adapt(b, map[string]interface{}{
+				"filename": "test.caddy.yaml",
+			})
 			if err != nil {
 				t.Fatal(err)
 			}
