@@ -23,12 +23,12 @@ func applyTemplate(body []byte, values map[string]interface{}, env []string) ([]
 		Delims(openingDelim, closingDelim).
 		Parse(tplBody)
 	if err != nil {
-		return body, err
+		return nil, err
 	}
 
 	var out bytes.Buffer
 	if err := tpl.Execute(&out, values); err != nil {
-		return body, err
+		return nil, err
 	}
 	return out.Bytes(), nil
 }
