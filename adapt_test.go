@@ -3,31 +3,66 @@ package caddyyaml
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os"
 	"reflect"
 	"testing"
 )
 
 func TestApply(t *testing.T) {
 	tests := []struct {
-		filename    string
-		environment string
+		name             string
+		filename         string
+		env              []string
+		expectedWarnings []string
 	}{
-		{filename: "test.caddy.json"},
-		{filename: "test.caddy.prod.json", environment: "production"},
+		{
+			name:     "simple",
+			filename: "test.caddy.json",
+			env:      []string{"ENVIRONMENT=something"},
+		},
+		{
+			name:     "production environment",
+			filename: "test.caddy.prod.json",
+			env:      []string{"ENVIRONMENT=production"},
+		},
+		{
+			name:     "bad environment variables",
+			filename: "test.caddy.json",
+			env: []string{
+				"ENVIRONMENT=bad",
+				"INVALID%=invalid_name",
+				"VALUE_WITH_BACKSLASH=foo\\bar",
+			},
+			expectedWarnings: []string{
+				"test.caddy.yaml:-1: environment variable \"INVALID%\" cannot be used in template",
+			},
+		},
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.environment, func(t *testing.T) {
-			os.Setenv("ENVIRONMENT", tt.environment)
-
+		t.Run(tt.name, func(t *testing.T) {
 			b, err := ioutil.ReadFile("./testdata/test.caddy.yaml")
 			if err != nil {
 				t.Fatal(err)
 			}
-			adaptedBytes, _, err := Adapter{}.Adapt(b, nil)
+			adaptedBytes, warnings, err := Adapter{}.Adapt(b, map[string]interface{}{
+				"filename":    "test.caddy.yaml",
+				envOptionName: tt.env,
+			})
 			if err != nil {
 				t.Fatal(err)
+			}
+
+			for i, w := range warnings {
+				if len(tt.expectedWarnings) < i+1 {
+					t.Fatalf("unexpected warning %q", w)
+				}
+				eW := tt.expectedWarnings[i]
+				if eW != w.String() {
+					t.Fatalf("expected warning %q, got %q", eW, w)
+				}
+			}
+			if len(tt.expectedWarnings) > len(warnings) {
+				t.Fatalf("expected additional warnings: %v", tt.expectedWarnings[len(warnings):])
 			}
 
 			jsonBytes, err := ioutil.ReadFile("./testdata/" + tt.filename)

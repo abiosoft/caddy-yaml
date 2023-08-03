@@ -27,7 +27,7 @@ func yamlToJSON(b []byte) ([]byte, error) {
 	return json.Marshal(tmp)
 }
 
-func varsFromBody(b []byte) (map[string]interface{}, error) {
+func varsFromBody(b []byte, env []string) (map[string]interface{}, error) {
 	var tmp map[string]interface{}
 	var vars map[string]interface{}
 
@@ -36,7 +36,7 @@ func varsFromBody(b []byte) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	varsBytes, err = applyTemplate(varsBytes, nil)
+	varsBytes, err = applyTemplate(varsBytes, nil, env, nil)
 	if err != nil {
 		return nil, err
 	}

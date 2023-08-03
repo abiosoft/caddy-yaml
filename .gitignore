@@ -2,3 +2,6 @@
 examples/
 caddy
 deps.go
+*.porig
+*.orig
+*.rej
