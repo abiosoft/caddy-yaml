@@ -3,7 +3,6 @@ package caddyyaml
 import (
 	"bytes"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"text/template"
@@ -16,8 +15,8 @@ const (
 	closingDelim = "}"
 )
 
-func applyTemplate(body []byte, values map[string]interface{}) ([]byte, error) {
-	tplBody := envVarsTemplate() + string(body)
+func applyTemplate(body []byte, values map[string]interface{}, env []string) ([]byte, error) {
+	tplBody := envVarsTemplate(env) + string(body)
 
 	tpl, err := template.New("yaml").
 		Funcs(sprig.TxtFuncMap()).
@@ -34,7 +33,7 @@ func applyTemplate(body []byte, values map[string]interface{}) ([]byte, error) {
 	return out.Bytes(), nil
 }
 
-func envVarsTemplate() string {
+func envVarsTemplate(env []string) string {
 	var builder strings.Builder
 	line := func(key, val string) string {
 		// avoid quoted string
@@ -45,7 +44,7 @@ func envVarsTemplate() string {
 		}
 		return tplWrap(fmt.Sprintf(`$%s := "%s"`, key, val))
 	}
-	for _, env := range os.Environ() {
+	for _, env := range env {
 		key, val, _ := strings.Cut(env, "=")
 		fmt.Fprintln(&builder, line(key, val))
 	}

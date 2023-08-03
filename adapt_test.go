@@ -3,30 +3,37 @@ package caddyyaml
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os"
 	"reflect"
 	"testing"
 )
 
 func TestApply(t *testing.T) {
 	tests := []struct {
-		filename    string
-		environment string
+		name     string
+		filename string
+		env      []string
 	}{
-		{filename: "test.caddy.json"},
-		{filename: "test.caddy.prod.json", environment: "production"},
+		{
+			name:     "simple",
+			filename: "test.caddy.json",
+			env:      []string{"ENVIRONMENT=something"},
+		},
+		{
+			name:     "production environment",
+			filename: "test.caddy.prod.json",
+			env:      []string{"ENVIRONMENT=production"},
+		},
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.environment, func(t *testing.T) {
-			os.Setenv("ENVIRONMENT", tt.environment)
-
+		t.Run(tt.name, func(t *testing.T) {
 			b, err := ioutil.ReadFile("./testdata/test.caddy.yaml")
 			if err != nil {
 				t.Fatal(err)
 			}
 			adaptedBytes, _, err := Adapter{}.Adapt(b, map[string]interface{}{
-				"filename": "test.caddy.yaml",
+				"filename":    "test.caddy.yaml",
+				envOptionName: tt.env,
 			})
 			if err != nil {
 				t.Fatal(err)
